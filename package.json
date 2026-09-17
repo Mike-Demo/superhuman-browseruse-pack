@@ -1,0 +1,17 @@
+{
+  "name": "superhuman-browseruse-pack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Superhuman Pack connecting Superhuman Go to Browser Use Cloud through its MCP server.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build"
+  },
+  "dependencies": {
+    "@superhuman/packs-sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.4"
+  }
+}
