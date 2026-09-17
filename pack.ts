@@ -1,16 +1,29 @@
 import * as sdk from "@superhuman/packs-sdk";
 
+const BROWSER_USE_API_HOST = "api.browser-use.com";
+const BROWSER_USE_SETTINGS_URL = "https://cloud.browser-use.com/settings";
+const BROWSER_USE_MCP_ENDPOINT = "https://api.browser-use.com/v3/mcp";
+const BROWSER_USE_API_KEY_HEADER = "x-browser-use-api-key";
+
+const jsonString = (value: unknown): string => {
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value ?? {}, null, 2);
+  } catch (_error) {
+    return String(value ?? "");
+  }
+};
+
 export const pack = sdk.newPack();
 
-// Required: allow network access to the Browser Use Cloud MCP endpoint.
-pack.addNetworkDomain("api.browser-use.com");
+// Browser Use Cloud is reachable over the public Cloud API and MCP endpoint.
+pack.addNetworkDomain(BROWSER_USE_API_HOST);
+pack.addNetworkDomain("cloud.browser-use.com");
 
-// Browser Use Cloud authenticates with a user-supplied API key in a static
-// custom header, not OAuth. This is the correct auth pattern for the pack.
 pack.setUserAuthentication({
   type: sdk.AuthenticationType.CustomHeaderToken,
-  headerName: "x-browser-use-api-key",
-  instructionsUrl: "https://cloud.browser-use.com/settings",
+  headerName: BROWSER_USE_API_KEY_HEADER,
+  instructionsUrl: BROWSER_USE_SETTINGS_URL,
   getConnectionName: async (context) => {
     try {
       const response = await context.fetcher.fetch({
@@ -18,21 +31,23 @@ pack.setUserAuthentication({
         url: "https://api.browser-use.com/v3/me",
       });
 
-      return response.body?.email ?? response.body?.name ?? "Browser Use account";
+      return (
+        response.body?.email ??
+        response.body?.name ??
+        response.body?.username ??
+        "Browser Use account"
+      );
     } catch (_error) {
       return "Browser Use account";
     }
   },
 });
 
-// This is the critical integration point: Superhuman Go will expose Browser Use's
-// tools through this MCP server in the Pack UI / agent runtime.
 pack.addMCPServer({
   name: "Browser Use",
-  endpointUrl: "https://api.browser-use.com/v3/mcp",
+  endpointUrl: BROWSER_USE_MCP_ENDPOINT,
 });
 
-// Optional formula helpers for local validation and easier manual testing.
 pack.addFormula({
   name: "RunBrowserTask",
   description: "Start a Browser Use browser automation task and return the task ID.",
@@ -40,41 +55,76 @@ pack.addFormula({
     sdk.makeParameter({
       type: sdk.ParameterType.String,
       name: "instructions",
-      description: "Natural-language instructions to execute in the browser.",
+      description: "Instructions for the Browser Use agent to execute in the browser.",
     }),
   ],
   resultType: sdk.ValueType.String,
   execute: async ([instructions], context) => {
+    if (!instructions || !instructions.trim()) {
+      throw new Error("Instructions are required to start a Browser Use task.");
+    }
+
     const response = await context.fetcher.fetch({
       method: "POST",
       url: "https://api.browser-use.com/v3/run",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ task: instructions }),
+      body: JSON.stringify({ task: instructions.trim() }),
     });
 
-    return response.body?.id ?? response.body?.task_id ?? JSON.stringify(response.body);
+    const taskId = response.body?.id ?? response.body?.task_id;
+    if (!taskId) {
+      throw new Error(`Browser Use task creation response did not return an ID: ${jsonString(response.body)}`);
+    }
+
+    return String(taskId);
   },
 });
 
 pack.addFormula({
   name: "GetBrowserTaskStatus",
-  description: "Fetch the task state and output for a Browser Use task ID.",
+  description: "Fetch the Browser Use task status and payload for a task ID.",
   parameters: [
     sdk.makeParameter({
       type: sdk.ParameterType.String,
       name: "taskId",
-      description: "Browser Use task ID returned by RunBrowserTask.",
+      description: "The Browser Use task ID returned by RunBrowserTask.",
     }),
   ],
   resultType: sdk.ValueType.String,
   execute: async ([taskId], context) => {
+    if (!taskId || !taskId.trim()) {
+      throw new Error("A valid Browser Use task ID is required.");
+    }
+
     const response = await context.fetcher.fetch({
       method: "GET",
-      url: `https://api.browser-use.com/v3/task/${taskId}`,
+      url: `https://api.browser-use.com/v3/task/${encodeURIComponent(taskId.trim())}`,
     });
 
-    return JSON.stringify(response.body ?? {});
+    return jsonString(response.body ?? {});
+  },
+});
+
+pack.addFormula({
+  name: "BrowserUseHealthCheck",
+  description: "Confirms the Browser Use API is reachable and the user API key is valid.",
+  parameters: [],
+  resultType: sdk.ValueType.String,
+  execute: async (_, context) => {
+    try {
+      const response = await context.fetcher.fetch({
+        method: "GET",
+        url: "https://api.browser-use.com/v3/me",
+      });
+
+      return jsonString(response.body ?? { ok: true });
+    } catch (error) {
+      return jsonString({
+        ok: false,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   },
 });
