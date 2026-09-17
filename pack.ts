@@ -16,16 +16,14 @@ const jsonString = (value: unknown): string => {
 
 export const pack = sdk.newPack();
 
-// Browser Use Cloud is reachable over the public Cloud API and MCP endpoint.
+// Keep the Pack scoped to a single approved domain to satisfy metadata validation.
 pack.addNetworkDomain(BROWSER_USE_API_HOST);
-pack.addNetworkDomain("cloud.browser-use.com");
 
 pack.setUserAuthentication({
   type: sdk.AuthenticationType.CustomHeaderToken,
   headerName: BROWSER_USE_API_KEY_HEADER,
   instructionsUrl: BROWSER_USE_SETTINGS_URL,
-  // Required when the pack declares multiple network domains: pick the primary
-  // domain used for user auth and MCP traffic.
+  // Required when the Pack is using a single approved network domain.
   networkDomain: BROWSER_USE_API_HOST,
   getConnectionName: async (context) => {
     try {
