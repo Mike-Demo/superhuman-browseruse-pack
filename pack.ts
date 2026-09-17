@@ -15,6 +15,11 @@ const jsonString = (value: unknown): string => {
   }
 };
 
+const getPositiveNumber = (value: unknown, fallback: number): number => {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
+
 export const pack = sdk.newPack();
 
 // Keep the Pack scoped to a single approved domain to satisfy metadata validation.
@@ -108,6 +113,66 @@ pack.addFormula({
     });
 
     return jsonString(response.body ?? {});
+  },
+});
+
+pack.addFormula({
+  name: "WaitForBrowserTask",
+  description: "Poll a Browser Use task until it completes or the timeout is reached.",
+  parameters: [
+    sdk.makeParameter({
+      type: sdk.ParameterType.String,
+      name: "taskId",
+      description: "The Browser Use task ID returned by RunBrowserTask.",
+    }),
+    sdk.makeParameter({
+      type: sdk.ParameterType.Number,
+      name: "timeoutSeconds",
+      description: "Maximum number of seconds to wait before returning the last known result.",
+      optional: true,
+    }),
+    sdk.makeParameter({
+      type: sdk.ParameterType.Number,
+      name: "pollIntervalSeconds",
+      description: "Seconds between status checks.",
+      optional: true,
+    }),
+  ],
+  resultType: sdk.ValueType.String,
+  execute: async ([taskId, timeoutSeconds, pollIntervalSeconds], context) => {
+    if (!taskId || !taskId.trim()) {
+      throw new Error("A valid Browser Use task ID is required.");
+    }
+
+    const timeoutMs = getPositiveNumber(timeoutSeconds, 120) * 1000;
+    const pollIntervalMs = getPositiveNumber(pollIntervalSeconds, 5) * 1000;
+    const deadline = Date.now() + timeoutMs;
+    const terminalStatuses = new Set(["stopped", "timed_out", "error"]);
+
+    let latestBody: unknown = {};
+
+    while (Date.now() <= deadline) {
+      const response = await context.fetcher.fetch({
+        method: "GET",
+        url: `${BROWSER_USE_API_BASE}/sessions/${encodeURIComponent(taskId.trim())}`,
+      });
+
+      latestBody = response.body ?? {};
+      const status = response.body?.status;
+
+      if (terminalStatuses.has(status)) {
+        return jsonString(latestBody);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+    }
+
+    return jsonString({
+      timedOut: true,
+      taskId: taskId.trim(),
+      lastStatus: (latestBody as any)?.status ?? "unknown",
+      session: latestBody,
+    });
   },
 });
 
