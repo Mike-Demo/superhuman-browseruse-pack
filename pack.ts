@@ -42,6 +42,7 @@ pack.setUserAuthentication({
       const response = await context.fetcher.fetch({
         method: "GET",
         url: `${BROWSER_USE_API_BASE}/sessions?page_size=1`,
+        cacheTtlSecs: 0,
       });
 
       return (
@@ -99,6 +100,7 @@ pack.addFormula({
 
 pack.addFormula({
   name: "GetBrowserTaskStatus",
+  cacheTtlSecs: 0,
   description: "Fetch the Browser Use task status and payload for a task ID.",
   parameters: [
     sdk.makeParameter({
@@ -116,6 +118,7 @@ pack.addFormula({
     const response = await context.fetcher.fetch({
       method: "GET",
       url: `${BROWSER_USE_API_BASE}/sessions/${encodeURIComponent(taskId.trim())}`,
+      cacheTtlSecs: 0,
     });
 
     return jsonString(response.body ?? {});
@@ -124,6 +127,7 @@ pack.addFormula({
 
 pack.addFormula({
   name: "WaitForBrowserTask",
+  cacheTtlSecs: 0,
   description: "Poll a Browser Use task until it completes or the timeout is reached.",
   parameters: [
     sdk.makeParameter({
@@ -150,8 +154,8 @@ pack.addFormula({
       throw new Error("A valid Browser Use task ID is required.");
     }
 
-    const timeoutMs = getPositiveNumber(timeoutSeconds, 120) * 1000;
-    const pollIntervalMs = getPositiveNumber(pollIntervalSeconds, 5) * 1000;
+    const timeoutMs = Math.min(getPositiveNumber(timeoutSeconds, 45) * 1000, 45_000);
+    const pollIntervalMs = Math.max(getPositiveNumber(pollIntervalSeconds, 5) * 1000, 2_000);
     const deadline = Date.now() + timeoutMs;
     const terminalStatuses = new Set(["stopped", "timed_out", "error"]);
 
@@ -161,6 +165,7 @@ pack.addFormula({
       const response = await context.fetcher.fetch({
         method: "GET",
         url: `${BROWSER_USE_API_BASE}/sessions/${encodeURIComponent(taskId.trim())}`,
+        cacheTtlSecs: 0,
       });
 
       latestBody = response.body ?? {};
@@ -186,6 +191,7 @@ pack.addFormula({
 
 pack.addFormula({
   name: "BrowserUseHealthCheck",
+  cacheTtlSecs: 0,
   description: "Confirms the Browser Use API is reachable and the user API key is valid.",
   parameters: [],
   resultType: sdk.ValueType.String,
@@ -194,6 +200,7 @@ pack.addFormula({
       const response = await context.fetcher.fetch({
         method: "GET",
         url: `${BROWSER_USE_API_BASE}/sessions?page_size=1`,
+        cacheTtlSecs: 0,
       });
 
       return jsonString(response.body ?? { ok: true });
