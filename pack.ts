@@ -1,5 +1,11 @@
 import * as sdk from "@codahq/packs-sdk";
 
+declare const setTimeout: (
+  handler: (...args: any[]) => void,
+  timeout?: number,
+  ...args: any[]
+) => number;
+
 const BROWSER_USE_API_HOST = "api.browser-use.com";
 const BROWSER_USE_SETTINGS_URL = "https://cloud.browser-use.com/settings";
 const BROWSER_USE_API_BASE = "https://api.browser-use.com/api/v3";
@@ -164,7 +170,9 @@ pack.addFormula({
         return jsonString(latestBody);
       }
 
-      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+      await new Promise<void>((resolve) => {
+        setTimeout(resolve, pollIntervalMs);
+      });
     }
 
     return jsonString({
