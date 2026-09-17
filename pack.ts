@@ -24,6 +24,9 @@ pack.setUserAuthentication({
   type: sdk.AuthenticationType.CustomHeaderToken,
   headerName: BROWSER_USE_API_KEY_HEADER,
   instructionsUrl: BROWSER_USE_SETTINGS_URL,
+  // Required when the pack declares multiple network domains: pick the primary
+  // domain used for user auth and MCP traffic.
+  networkDomain: BROWSER_USE_API_HOST,
   getConnectionName: async (context) => {
     try {
       const response = await context.fetcher.fetch({
@@ -44,7 +47,8 @@ pack.setUserAuthentication({
 });
 
 pack.addMCPServer({
-  name: "Browser Use",
+  // MCP server names may only contain alphanumeric characters and underscores.
+  name: "Browser_Use",
   endpointUrl: BROWSER_USE_MCP_ENDPOINT,
 });
 
