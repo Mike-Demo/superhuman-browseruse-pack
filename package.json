@@ -8,7 +8,7 @@
     "test": "npm run build"
   },
   "dependencies": {
-    "@superhuman/packs-sdk": "^1.0.0"
+    "@codahq/packs-sdk": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
