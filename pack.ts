@@ -1,4 +1,4 @@
-import * as sdk from "@superhuman/packs-sdk";
+import * as sdk from "@codahq/packs-sdk";
 
 const BROWSER_USE_API_HOST = "api.browser-use.com";
 const BROWSER_USE_SETTINGS_URL = "https://cloud.browser-use.com/settings";
