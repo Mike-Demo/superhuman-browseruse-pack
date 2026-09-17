@@ -2,6 +2,7 @@ import * as sdk from "@codahq/packs-sdk";
 
 const BROWSER_USE_API_HOST = "api.browser-use.com";
 const BROWSER_USE_SETTINGS_URL = "https://cloud.browser-use.com/settings";
+const BROWSER_USE_API_BASE = "https://api.browser-use.com/api/v3";
 const BROWSER_USE_MCP_ENDPOINT = "https://api.browser-use.com/v3/mcp";
 const BROWSER_USE_API_KEY_HEADER = "x-browser-use-api-key";
 
@@ -29,10 +30,11 @@ pack.setUserAuthentication({
     try {
       const response = await context.fetcher.fetch({
         method: "GET",
-        url: "https://api.browser-use.com/v3/me",
+        url: `${BROWSER_USE_API_BASE}/sessions?page_size=1`,
       });
 
       return (
+        response.body?.items?.[0]?.user?.email ??
         response.body?.email ??
         response.body?.name ??
         response.body?.username ??
@@ -68,16 +70,16 @@ pack.addFormula({
 
     const response = await context.fetcher.fetch({
       method: "POST",
-      url: "https://api.browser-use.com/v3/run",
+      url: `${BROWSER_USE_API_BASE}/sessions`,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ task: instructions.trim() }),
     });
 
-    const taskId = response.body?.id ?? response.body?.task_id;
+    const taskId = response.body?.id ?? response.body?.session_id ?? response.body?.session?.id;
     if (!taskId) {
-      throw new Error(`Browser Use task creation response did not return an ID: ${jsonString(response.body)}`);
+      throw new Error(`Browser Use task creation response did not return a session ID: ${jsonString(response.body)}`);
     }
 
     return String(taskId);
@@ -102,7 +104,7 @@ pack.addFormula({
 
     const response = await context.fetcher.fetch({
       method: "GET",
-      url: `https://api.browser-use.com/v3/task/${encodeURIComponent(taskId.trim())}`,
+      url: `${BROWSER_USE_API_BASE}/sessions/${encodeURIComponent(taskId.trim())}`,
     });
 
     return jsonString(response.body ?? {});
@@ -118,7 +120,7 @@ pack.addFormula({
     try {
       const response = await context.fetcher.fetch({
         method: "GET",
-        url: "https://api.browser-use.com/v3/me",
+        url: `${BROWSER_USE_API_BASE}/sessions?page_size=1`,
       });
 
       return jsonString(response.body ?? { ok: true });
