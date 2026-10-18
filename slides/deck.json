@@ -1,0 +1,249 @@
+{
+  "boltSlidesVersion": 1,
+  "boltSlidesId": "11011050-f9d6-4d43-8a9e-3e43af51bbaf",
+  "deck": {
+    "title": "Superhuman BrowserUse Pack",
+    "transition": "fade",
+    "font": "space",
+    "accent": "#a78bfa"
+  },
+  "slides": [
+    {
+      "id": "s1",
+      "position": 0,
+      "layout": "cover",
+      "props": {
+        "kicker": "Open source · Browser automation for email",
+        "title": "Superhuman ==BrowserUse Pack==",
+        "subtitle": "Your inbox, on autopilot — with a human still in charge.",
+        "foot": "github.com/Mike-Demo/superhuman-browseruse-pack"
+      },
+      "background": {
+        "type": "gradient",
+        "from": "#0b0a14",
+        "to": "#171230",
+        "angle": 160
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Hook: Superhuman made reading email fast — this pack makes the repetitive parts run themselves. One sentence, then move.",
+      "status": "none"
+    },
+    {
+      "id": "s2",
+      "position": 1,
+      "layout": "contrast",
+      "props": {
+        "kicker": "The problem",
+        "title": "Fast for a human. ==Slow for the routine.==",
+        "left": {
+          "label": "What Superhuman nails",
+          "title": "Reading and replying",
+          "points": [
+            "Keyboard-first speed",
+            "Split seconds per message",
+            "A flow built for people"
+          ]
+        },
+        "right": {
+          "label": "What still eats your day",
+          "title": "Repetitive inbox routines",
+          "points": [
+            "Daily triage passes",
+            "Follow-up nudges",
+            "Filing and recurring checks"
+          ]
+        }
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Superhuman wins on human speed, but the same routines — triage, nudges, filing — burn keyboard time every single day.",
+      "status": "none"
+    },
+    {
+      "id": "s3",
+      "position": 2,
+      "layout": "statement",
+      "props": {
+        "kicker": "What it is",
+        "title": "Browser Use automations that drive Superhuman ==the way you would.==",
+        "body": "Clicking, reading, drafting — through the web app like a person — so routine inbox work becomes repeatable recipes."
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "No API hacking: the automations use Superhuman's web interface the way a person does, which keeps them robust and inspectable.",
+      "status": "none"
+    },
+    {
+      "id": "s4",
+      "position": 3,
+      "layout": "steps",
+      "props": {
+        "kicker": "How it works",
+        "title": "Every recipe is small, inspectable, and ==stops for you.==",
+        "items": [
+          {
+            "title": "Open",
+            "body": "Launches Superhuman's web app"
+          },
+          {
+            "title": "Perform",
+            "body": "Runs the routine, step by visible step"
+          },
+          {
+            "title": "Draft",
+            "body": "Prepares the outputs — never sends"
+          },
+          {
+            "title": "Stop",
+            "body": "Pauses for your review"
+          }
+        ]
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Walk the four beats. Emphasize the last two: drafting only, and a hard stop where the human takes over.",
+      "status": "none"
+    },
+    {
+      "id": "s5",
+      "position": 4,
+      "layout": "pillars",
+      "props": {
+        "title": "Guardrails by design.",
+        "items": [
+          {
+            "title": "Drafts, not sends",
+            "body": "Recipes prepare messages; nothing leaves your inbox on its own."
+          },
+          {
+            "title": "Visible steps",
+            "body": "Every action happens on screen where you can watch it."
+          },
+          {
+            "title": "Human approval",
+            "body": "Anything outbound needs a person to say yes first."
+          }
+        ]
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "The trust slide: automation prepares, people decide. That's the design principle, not a setting.",
+      "status": "none"
+    },
+    {
+      "id": "s6",
+      "position": 5,
+      "layout": "bento",
+      "props": {
+        "kicker": "Key features",
+        "title": "A pack of ready-made inbox recipes.",
+        "tiles": [
+          {
+            "k": "01",
+            "title": "Triage passes",
+            "body": "Sort the day's mail by your rules, every morning.",
+            "c": 3
+          },
+          {
+            "k": "02",
+            "title": "Follow-up nudges",
+            "body": "Find threads that went quiet and draft the nudge.",
+            "c": 3
+          },
+          {
+            "k": "03",
+            "title": "Auto-filing",
+            "body": "File, label, and archive recurring mail on schedule.",
+            "c": 2
+          },
+          {
+            "k": "04",
+            "title": "Recurring checks",
+            "body": "Watch for the messages you always end up hunting for.",
+            "c": 2,
+            "variant": "accent"
+          },
+          {
+            "k": "05",
+            "title": "Fully editable",
+            "body": "Each recipe is small, readable code you can tweak.",
+            "c": 2
+          }
+        ]
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Pick one or two recipes to demo live if there's time; the point is breadth — routine inbox work, covered.",
+      "status": "none"
+    },
+    {
+      "id": "s7",
+      "position": 6,
+      "layout": "bigNumber",
+      "props": {
+        "kicker": "Status — a working pack, open source",
+        "value": "0",
+        "caption": "messages sent without a human approving them first",
+        "foot": "github.com/Mike-Demo/superhuman-browseruse-pack"
+      },
+      "background": {
+        "type": "color",
+        "color": "var(--bg)"
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Let the zero land. It's the guardrail expressed as a number — and a live, working open-source pack today.",
+      "status": "none"
+    },
+    {
+      "id": "s8",
+      "position": 7,
+      "layout": "cover",
+      "props": {
+        "kicker": "Try it today",
+        "title": "Put your inbox ==on autopilot.==",
+        "subtitle": "Clone the pack, pick a recipe, keep the final say.",
+        "foot": "github.com/Mike-Demo/superhuman-browseruse-pack"
+      },
+      "background": {
+        "type": "gradient",
+        "from": "#0b0a14",
+        "to": "#171230",
+        "angle": 160
+      },
+      "animation": "cascade",
+      "transition": null,
+      "nav": null,
+      "notes": "Close with the call to action: clone the repo, run one recipe this week, and keep the human in charge.",
+      "status": "none"
+    }
+  ]
+}
